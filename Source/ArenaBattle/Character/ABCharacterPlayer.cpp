@@ -52,7 +52,7 @@ AABCharacterPlayer::AABCharacterPlayer()
 		QuaterMoveAction = InputActionQuaterMoveRef.Object;
 	}
 
-	CurrentCharacterControlType = ECharacterControlType::Quater;
+	CurrentCharacterControlType = ECharacterControlType::Shoulder;
 }
 
 void AABCharacterPlayer::BeginPlay()
@@ -70,7 +70,7 @@ void AABCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-	EnhancedInputComponent->BindAction(ChangeControlAction, ETriggerEvent::Triggered, this, &AABCharacterPlayer::ChangeCharacterControl);
+	//EnhancedInputComponent->BindAction(ChangeControlAction, ETriggerEvent::Triggered, this, &AABCharacterPlayer::ChangeCharacterControl);
 	EnhancedInputComponent->BindAction(ShoulderMoveAction, ETriggerEvent::Triggered, this, &AABCharacterPlayer::ShoulderMove);
 	EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::Triggered, this, &AABCharacterPlayer::ShoulderLook);
 	EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &AABCharacterPlayer::QuaterMove);
