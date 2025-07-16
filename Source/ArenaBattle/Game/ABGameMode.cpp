@@ -3,6 +3,9 @@
 
 #include "Game/ABGameMode.h"
 #include "ABGameMode.h"
+#include "Beat/ABBeatManager.h"
+#include "Sound/SoundBase.h"
+#include "Kismet/GameplayStatics.h"
 
 AABGameMode::AABGameMode()
 {
@@ -23,5 +26,20 @@ AABGameMode::AABGameMode()
 	if (PlayerControllerClassRef.Class)
 	{
 		PlayerControllerClass = PlayerControllerClassRef.Class;
+	}
+}
+
+void AABGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	if (BackGroundMusic)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), BackGroundMusic);
+
+		if (UABBeatManager* BeatMgr = GetGameInstance()->GetSubsystem<UABBeatManager>())
+		{
+			BeatMgr->SetBeatInitialize(140);
+		}
 	}
 }

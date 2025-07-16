@@ -17,4 +17,9 @@ class ARENABATTLE_API AABGameMode : public AGameModeBase
 public:
 	AABGameMode();
 	
+	virtual void BeginPlay() override;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sound)
+	TObjectPtr<class USoundBase> BackGroundMusic;
 };
