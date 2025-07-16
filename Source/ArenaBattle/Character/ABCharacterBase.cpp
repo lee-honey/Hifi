@@ -58,6 +58,15 @@ AABCharacterBase::AABCharacterBase()
 	{
 		CharacterControlManager.Add(ECharacterControlType::Quater, QuaterDataRef.Object);
 	}
+
+	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
+	Weapon->SetupAttachment(GetMesh(), TEXT("hand_rSocket"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> WeaponMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/ArenaBattle/Hifi/Guitar/Guitar.Guitar'"));
+	if (WeaponMeshRef.Object)
+	{
+		Weapon->SetSkeletalMesh(WeaponMeshRef.Object);
+		Weapon->SetRenderCustomDepth(true);
+	}
 }
 
 void AABCharacterBase::SetCharacterControlData(const UABCharacterControlData* CharacterControlData)
