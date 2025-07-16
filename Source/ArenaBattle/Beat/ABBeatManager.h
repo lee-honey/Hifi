@@ -8,6 +8,7 @@
 #include "Stats/Stats.h"
 #include "ABBeatManager.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnBeat)
 /**
  * 
  */
@@ -43,6 +44,10 @@ public:
 
 	FORCEINLINE void SetPerfect(const bool InCheck) { Perfect = InCheck; }
 	FORCEINLINE void SetJudge(const bool InCheck) { Judge = InCheck; }
+
+public:
+	// delegate
+	FOnBeat OnBeat;
 
 private:
 	float BeatTime = 0.f;				// 비트시간 계산

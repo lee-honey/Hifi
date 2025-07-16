@@ -70,6 +70,7 @@ void UABBeatManager::Tick(float DeltaTime)
         AccTime = AccTime - BeatTime;
         // 비트발생!
 		Beat = true;
+        OnBeat.Broadcast();
 		OneFour[1] = false;          // 지나감
 		TwoFour[1] = false;          // 지나감
 		ThreeFour[1] = false;        // 지나감   
