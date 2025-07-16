@@ -6,6 +6,7 @@
 #include "Beat/ABBeatManager.h"
 #include "Sound/SoundBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "UI/ABBeatBarWidget.h"
 
 AABGameMode::AABGameMode()
 {
@@ -20,6 +21,7 @@ AABGameMode::AABGameMode()
 	{
 		PlayerControllerClass = PlayerControllerClassRef.Class;
 	}
+
 }
 
 void AABGameMode::BeginPlay()
@@ -30,9 +32,18 @@ void AABGameMode::BeginPlay()
 	{
 		UGameplayStatics::PlaySound2D(GetWorld(), BackGroundMusic);
 
-		if (UABBeatManager* BeatMgr = GetGameInstance()->GetSubsystem<UABBeatManager>())
+		if (GetGameInstance()->GetSubsystem<UABBeatManager>())
 		{
-			BeatMgr->SetBeatInitialize(140);
+			GetGameInstance()->GetSubsystem<UABBeatManager>()->SetBeatInitialize(140);
+		}
+	}
+
+	if (BeatUIClass)
+	{
+		BeatUIInstance = CreateWidget<UABBeatBarWidget>(GetWorld(), BeatUIClass);
+		if (BeatUIInstance.IsNull() == false)
+		{
+			BeatUIInstance->AddToViewport();
 		}
 	}
 }
