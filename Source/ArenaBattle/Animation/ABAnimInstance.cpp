@@ -33,5 +33,6 @@ void UABAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		bIsIdle = GroundSpeed < MovingThreshould;
 		bIsFalling = Movement->IsFalling();
 		bIsJumping = bIsFalling & (Velocity.Z > JumpingThreshould);
+		JumpCount = Owner->JumpCurrentCount;
 	}
 }

@@ -49,4 +49,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
 	float JumpingThreshould;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
+	int  JumpCount;
+
 };
