@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "NavigationSystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Interface/ABCharacterAIInterface.h"
 
 UBTTaskNode_FindPatrolPos::UBTTaskNode_FindPatrolPos()
 {
@@ -28,10 +29,17 @@ EBTNodeResult::Type UBTTaskNode_FindPatrolPos::ExecuteTask(UBehaviorTreeComponen
         return EBTNodeResult::Failed;
     }
 
+    IABCharacterAIInterface* AIPawn = Cast<IABCharacterAIInterface>(ControllingPawn);
+    if (nullptr == AIPawn)
+    {
+        return EBTNodeResult::Failed;
+    }
+
     FVector Origin = OwnerComp.GetBlackboardComponent()->GetValueAsVector(BBKEY_HOMEPOS);
+    float PatrolRadius = AIPawn->GetAIPatrolRadius();
     FNavLocation NextPatrolPos;
 
-    if (NavSystem->GetRandomPointInNavigableRadius(Origin, 500.f, NextPatrolPos))
+    if (NavSystem->GetRandomPointInNavigableRadius(Origin, PatrolRadius, NextPatrolPos))
     {
         OwnerComp.GetBlackboardComponent()->SetValueAsVector(BBKEY_PATROLPOS, NextPatrolPos.Location);
         return EBTNodeResult::Succeeded;
