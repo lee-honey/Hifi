@@ -23,6 +23,8 @@ public:
 	// Sets default values for this character's properties
 	AABCharacterBase();
 
+	virtual void PostInitializeComponents() override;
+
 protected:
 	virtual void SetCharacterControlData(const class UABCharacterControlData* CharacterControlData);
 
@@ -67,4 +69,10 @@ protected:
 	void PlayDeadAnimation();
 
 	float DeadEventDelayTime = 5.0f;
+
+	// Stat Section
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UABCharacterStatComponent> Stat;
+
 };

@@ -3,6 +3,7 @@
 
 #include "Character/ABCharacterNonPlayer.h"
 #include "AI/ABAIController.h"
+#include "CharacterStat/ABCharacterStatComponent.h"
 
 AABCharacterNonPlayer::AABCharacterNonPlayer()
 {
@@ -13,6 +14,12 @@ AABCharacterNonPlayer::AABCharacterNonPlayer()
 void AABCharacterNonPlayer::SetDead()
 {
 	Super::SetDead();
+
+	AABAIController* ABAIController = Cast<AABAIController>(GetController());
+	if (ABAIController)
+	{
+		ABAIController->StopAI();
+	}
 
 	FTimerHandle DeadTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
@@ -25,17 +32,17 @@ void AABCharacterNonPlayer::SetDead()
 
 float AABCharacterNonPlayer::GetAIPatrolRadius()
 {
-	return 800.0f;
+	return 1000.0f;
 }
 
 float AABCharacterNonPlayer::GetAIDetectRange()
 {
-	return 400.0f;
+	return 500.0f;
 }
 
 float AABCharacterNonPlayer::GetAIAttackRange()
 {
-	return 140.f; // 차후 변경 필요 (Stat->GetTotalStat().AttackRange + Stat->GetAttackRadius() * 2
+	return Stat->GetTotalStat().AttackRange + Stat->GetAttackRadius() * 2;
 }
 
 float AABCharacterNonPlayer::GetAITurnSpeed()

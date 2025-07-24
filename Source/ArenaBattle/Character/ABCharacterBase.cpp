@@ -9,6 +9,7 @@
 #include "ABComboActionData.h"
 #include "Physics/ABCollision.h"
 #include "Engine/DamageEvents.h"
+#include "CharacterStat/ABCharacterStatComponent.h"
 
 // Sets default values
 AABCharacterBase::AABCharacterBase()
@@ -87,6 +88,16 @@ AABCharacterBase::AABCharacterBase()
 	{
 		DeadMontage = DeadMontageRef.Object;
 	}
+
+	// Stat Component
+	Stat = CreateDefaultSubobject<UABCharacterStatComponent>(TEXT("Stat"));
+}
+
+void AABCharacterBase::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	Stat->OnHpZero.AddUObject(this, &AABCharacterBase::SetDead);
 }
 
 void AABCharacterBase::SetCharacterControlData(const UABCharacterControlData* CharacterControlData)
@@ -127,7 +138,7 @@ void AABCharacterBase::ComboActionBegin()
 	// GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None); // 이동기능없어짐
 
 	// Animation Setting
-	const float AttackSpeedRate = 1.0f;
+	const float AttackSpeedRate = Stat->GetTotalStat().AttackSpeed;
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	AnimInstance->Montage_Play(ComboActionMontage, AttackSpeedRate);
 
@@ -157,11 +168,9 @@ void AABCharacterBase::SetComboCheckTimer()
 	int32 ComboIndex = CurrentCombo - 1;
 	ensure(ComboActionData->EffectiveFrameCount.IsValidIndex(ComboIndex));
 
-	const float AttackSpeedRate = 1.0f;
+	const float AttackSpeedRate = Stat->GetTotalStat().AttackSpeed;
 	float ComboEffectiveTime = (ComboActionData->EffectiveFrameCount[ComboIndex] / ComboActionData->FrameRate) / AttackSpeedRate;
 	
-	UE_LOG(LogClass, Log, TEXT("%f %f"), ComboEffectiveTime, ComboActionData->EffectiveFrameCount[ComboIndex]);
-
 	if (ComboEffectiveTime > 0.0f)
 	{
 		GetWorld()->GetTimerManager().SetTimer(ComboTimerHandle, this, &AABCharacterBase::ComboCheck, ComboEffectiveTime, false);
@@ -187,9 +196,9 @@ void AABCharacterBase::AttackHitCheck()
 {
 	FHitResult OutHitResult;
 	FCollisionQueryParams Params(SCENE_QUERY_STAT(Attack), false, this);
-	const float AttackRange = 40.0f;
+	const float AttackRange = Stat->GetTotalStat().Attack;
 	const float AttackRadius = 50.0f;
-	const float AttackDamage = 30.0f;
+	const float AttackDamage = Stat->GetTotalStat().Attack;
 	const FVector Start = GetActorLocation() + GetActorForwardVector() * GetCapsuleComponent()->GetScaledCapsuleRadius();
 	const FVector End = Start + GetActorForwardVector() * AttackRange;
 
@@ -212,7 +221,8 @@ void AABCharacterBase::AttackHitCheck()
 float AABCharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	SetDead();
+	
+	Stat->ApplyDamage(DamageAmount);
 
 	return DamageAmount;
 }
@@ -231,6 +241,6 @@ void AABCharacterBase::PlayDeadAnimation()
 	AnimInstance->Montage_Play(DeadMontage, 1.0f);
 	if (DeadMontage != NULL)
 	{
-		UE_LOG(LogClass, Log, TEXT("I'mDead"));
+		UE_LOG(LogClass, Log, TEXT("I'm Dead"));
 	}
 }
