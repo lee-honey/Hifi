@@ -31,19 +31,11 @@ void AABGameMode::BeginPlay()
 	if (BackGroundMusic)
 	{
 		UGameplayStatics::PlaySound2D(GetWorld(), BackGroundMusic);
-
-		if (GetGameInstance()->GetSubsystem<UABBeatManager>())
-		{
-			GetGameInstance()->GetSubsystem<UABBeatManager>()->SetBeatInitialize(140);
-		}
 	}
 
-	if (BeatUIClass)
+	UABBeatManager* BeatManager = GetGameInstance()->GetSubsystem<UABBeatManager>();
+	if (BeatManager)
 	{
-		BeatUIInstance = CreateWidget<UABBeatBarWidget>(GetWorld(), BeatUIClass);
-		if (BeatUIInstance.IsNull() == false)
-		{
-			BeatUIInstance->AddToViewport();
-		}
+		BeatManager->SetBeatInitialize(140);
 	}
 }

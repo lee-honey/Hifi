@@ -23,10 +23,4 @@ public:
 	// sound
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sound)
 	TObjectPtr<class USoundBase> BackGroundMusic;
-
-	// beat ui
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
-	TSubclassOf<class UUserWidget> BeatUIClass;
-	UPROPERTY()
-	TObjectPtr<class UUserWidget> BeatUIInstance;
 };
