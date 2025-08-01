@@ -16,6 +16,7 @@ class ARENABATTLE_API UABAnimInstance : public UAnimInstance
 	
 public:
 	UABAnimInstance();
+	bool IsGrounded() { return !(bIsFalling || bIsJumping); }
 
 protected:
 	virtual void NativeInitializeAnimation() override;
@@ -51,5 +52,4 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
 	int  JumpCount;
-
 };

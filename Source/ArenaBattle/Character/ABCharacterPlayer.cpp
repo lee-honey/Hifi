@@ -58,6 +58,12 @@ AABCharacterPlayer::AABCharacterPlayer()
 		AttackAction = InputActionAttackRef.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionDashRef(TEXT("/Script/EnhancedInput.InputAction'/Game/ArenaBattle/Input/Actions/IA_Dash.IA_Dash'"));
+	if (nullptr != InputActionDashRef.Object)
+	{
+		DashAction = InputActionDashRef.Object;
+	}
+
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
 	JumpMaxCount = 2;
 }
@@ -94,23 +100,11 @@ void AABCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-	//EnhancedInputComponent->BindAction(ChangeControlAction, ETriggerEvent::Triggered, this, &AABCharacterPlayer::ChangeCharacterControl);
 	EnhancedInputComponent->BindAction(ShoulderMoveAction, ETriggerEvent::Triggered, this, &AABCharacterPlayer::ShoulderMove);
 	EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::Triggered, this, &AABCharacterPlayer::ShoulderLook);
 	EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &AABCharacterPlayer::QuaterMove);
 	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AABCharacterPlayer::Attack);
-}
-
-void AABCharacterPlayer::ChangeCharacterControl()
-{
-	if (CurrentCharacterControlType == ECharacterControlType::Quater)
-	{
-		SetCharacterControl(ECharacterControlType::Shoulder);
-	}
-	else if (CurrentCharacterControlType == ECharacterControlType::Shoulder)
-	{
-		SetCharacterControl(ECharacterControlType::Quater);
-	}
+	EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Triggered, this, &AABCharacterPlayer::Dash);
 }
 
 void AABCharacterPlayer::SetCharacterControl(ECharacterControlType NewCharacterControlType)
@@ -194,4 +188,9 @@ void AABCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 void AABCharacterPlayer::Attack()
 {
 	ProcessComboCommand();
+}
+
+void AABCharacterPlayer::Dash()
+{
+	ProcessDashCommand();
 }

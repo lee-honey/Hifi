@@ -40,8 +40,10 @@ protected:
 	TObjectPtr<class UABComboActionData> ComboActionData;
 
 	void ProcessComboCommand();
+	void ProcessDashCommand();
 
 	void ComboActionBegin();
+
 	void ComboActionEnd(class UAnimMontage* TargetMontage, bool IsProperlyEnded);
 	virtual void NotifyComboActionEnd();
 	void SetComboCheckTimer();
@@ -69,6 +71,11 @@ protected:
 	void PlayDeadAnimation();
 
 	float DeadEventDelayTime = 5.0f;
+
+	// Dash Section
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> DashMontage;
 
 	// Stat Section
 protected:

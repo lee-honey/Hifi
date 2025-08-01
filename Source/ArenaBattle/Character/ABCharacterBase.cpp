@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "ABCharacterControlData.h"
 #include "Animation/AnimMontage.h"
+#include "Animation/ABAnimInstance.h"
 #include "ABComboActionData.h"
 #include "Physics/ABCollision.h"
 #include "Engine/DamageEvents.h"
@@ -89,6 +90,12 @@ AABCharacterBase::AABCharacterBase()
 		DeadMontage = DeadMontageRef.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> DashMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/ArenaBattle/Animation/AM_Dash.AM_Dash'"));
+	if (DashMontageRef.Object)
+	{
+		DashMontage = DashMontageRef.Object;
+	}
+
 	// Stat Component
 	Stat = CreateDefaultSubobject<UABCharacterStatComponent>(TEXT("Stat"));
 }
@@ -109,6 +116,17 @@ void AABCharacterBase::SetCharacterControlData(const UABCharacterControlData* Ch
 	GetCharacterMovement()->bOrientRotationToMovement = CharacterControlData->bOrientRotationToMovement;
 	GetCharacterMovement()->bUseControllerDesiredRotation = CharacterControlData->bUseControllerDesiredRotation;
 	GetCharacterMovement()->RotationRate = CharacterControlData->RotationRate;
+}
+
+void AABCharacterBase::ProcessDashCommand()
+{
+	UABAnimInstance* AnimInstance = static_cast<UABAnimInstance*>(GetMesh()->GetAnimInstance());
+	AnimInstance->Montage_Play(DashMontage, 1.f);
+	bool bIsGrounded = AnimInstance->IsGrounded();
+	int32 CurrentDash = (bIsGrounded) ? 1 : 2;
+	
+	FName NextSection = *FString::Printf(TEXT("Dash%d"), CurrentDash);
+	AnimInstance->Montage_JumpToSection(NextSection, ComboActionMontage);
 }
 
 void AABCharacterBase::ProcessComboCommand()
@@ -133,9 +151,6 @@ void AABCharacterBase::ComboActionBegin()
 {
 	// Combo Status
 	CurrentCombo = 1;
-
-	// Movement Setting
-	// GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None); // 이동기능없어짐
 
 	// Animation Setting
 	const float AttackSpeedRate = Stat->GetTotalStat().AttackSpeed;
