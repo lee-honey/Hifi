@@ -17,6 +17,8 @@ class ARENABATTLE_API UABAnimInstance : public UAnimInstance
 public:
 	UABAnimInstance();
 	bool IsGrounded() { return !(bIsFalling || bIsJumping); }
+	void SetIsHit(bool bHit) { bIsHit = bHit; }
+	bool GetIsHit() { return bIsHit; }
 
 protected:
 	virtual void NativeInitializeAnimation() override;
@@ -46,6 +48,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
 	uint8 bIsJumping : 1;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
+	uint8 bIsHit : 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
 	float JumpingThreshould;

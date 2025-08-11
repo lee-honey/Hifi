@@ -90,6 +90,12 @@ AABCharacterBase::AABCharacterBase()
 		DeadMontage = DeadMontageRef.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> DamagedMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/ArenaBattle/Animation/AM_Damaged.AM_Damaged'"));
+	if (DamagedMontageRef.Object)
+	{
+		DamagedMontage = DamagedMontageRef.Object;
+	}
+
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> DashMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/ArenaBattle/Animation/AM_Dash.AM_Dash'"));
 	if (DashMontageRef.Object)
 	{
@@ -169,7 +175,6 @@ void AABCharacterBase::ComboActionEnd(UAnimMontage* TargetMontage, bool IsProper
 {
 	ensure(CurrentCombo != 0);
 	CurrentCombo = 0;
-	// GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 
 	NotifyComboActionEnd();
 }
@@ -239,6 +244,13 @@ float AABCharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 	
 	Stat->ApplyDamage(DamageAmount);
 
+	if (Stat->GetCurrentHp() > 0)
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		AnimInstance->Montage_Play(DamagedMontage, 1.0f);
+		Cast<UABAnimInstance>(AnimInstance)->SetIsHit(true);
+	}
+
 	return DamageAmount;
 }
 
@@ -254,8 +266,4 @@ void AABCharacterBase::PlayDeadAnimation()
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	AnimInstance->StopAllMontages(0.0f); // 모든 몽타주 중지
 	AnimInstance->Montage_Play(DeadMontage, 1.0f);
-	if (DeadMontage != NULL)
-	{
-		UE_LOG(LogClass, Log, TEXT("I'm Dead"));
-	}
 }

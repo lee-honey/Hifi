@@ -61,6 +61,12 @@ protected:
 protected:
 	virtual void AttackHitCheck() override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	void DamagedActionEnd(class UAnimMontage* TargetMontage, bool IsProperlyEnded);
+
+	// Dash Section
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> DamagedMontage;
 
 	// Dead Section
 protected:
